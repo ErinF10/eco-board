@@ -1,0 +1,28 @@
+.Card {
+    backdrop-filter: blur(2px);
+    border-bottom: 1px solid rgba(153, 153, 153, 0.497);
+    width: 90%;
+    padding: 30px;
+    padding-top: 0px;
+    margin: 10px;
+}
+
+.title {
+    color:black;
+    font-size: 24px;
+    margin-bottom: -22px;
+}
+
+.username {
+    color: rgb(78, 78, 78);
+    margin-bottom: 10px;
+}
+
+.content {
+    color:black;  
+    text-align: justify;
+    text-justify: inter-word;
+    padding-right: 30px;
+    margin-bottom: 20px;
+    font-size: 15px;
+}
