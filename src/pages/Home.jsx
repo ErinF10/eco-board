@@ -13,8 +13,9 @@ const Home = () => {
         const options = { 
           month: 'short', 
           day: 'numeric', 
-          hour: 'numeric',
-          minute: 'numeric'
+          year: 'numeric'
+        //   hour: 'numeric',
+        //   minute: 'numeric'
         };
         return new Date(dateString).toLocaleDateString('en-US', options);
       }
@@ -31,13 +32,17 @@ const Home = () => {
                 
                 if (error) throw error;
                 
+                console.log('Raw data from database:', data);
+                
                 const formattedPosts = data.map(post => ({
                     ...post,
                     created_at: formatDate(post.created_at)
                 }));
                 
+                console.log('Formatted posts:', formattedPosts);
+                
                 setPosts(formattedPosts);
-
+        
             } catch (error) {
                 console.error('Error fetching posts:', error);
                 setError(error.message);
@@ -45,7 +50,6 @@ const Home = () => {
                 setIsLoading(false);
             }
         };
-        
         fetchPosts();
     }, []); 
 
@@ -63,14 +67,17 @@ const Home = () => {
             <div className="main-content">
                 {posts.length > 0 ? (
                     posts.map((post) => (
+                        <div key={`post-${post.id}`}>
                         <Card 
-                            key={post.id} 
                             id={post.id} 
                             title={post.title} 
                             content={post.content}
                             username={post.users.username}
                             created_at={post.created_at}
+                            likes={post.likes}
                         />
+                        <p>Debug - Like count: {post.likes}</p>
+                    </div>
                     ))
                 ) : (
                     <h2>No Posts Yet 😞</h2>

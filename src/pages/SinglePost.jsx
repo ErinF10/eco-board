@@ -15,8 +15,8 @@ const SinglePost = () => {
         const options = { 
           month: 'short', 
           day: 'numeric', 
-          hour: 'numeric',
-          minute: 'numeric'
+        //   hour: 'numeric',
+        //   minute: 'numeric'
         };
         return new Date(dateString).toLocaleDateString('en-US', options);
       }
