@@ -69,7 +69,7 @@ const Card = (props) =>  {
         return
       }
 
-      setLikeCount(prevCount => prevCount - 1)
+      setLikeCount(prevCount => prevCount + 1)
       setIsLiked(true)
       newLikeCount += 1
 

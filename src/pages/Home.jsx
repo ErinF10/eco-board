@@ -32,14 +32,14 @@ const Home = () => {
                 
                 if (error) throw error;
                 
-                console.log('Raw data from database:', data);
+                // console.log('Raw data from database:', data);
                 
                 const formattedPosts = data.map(post => ({
                     ...post,
                     created_at: formatDate(post.created_at)
                 }));
                 
-                console.log('Formatted posts:', formattedPosts);
+                // console.log('Formatted posts:', formattedPosts);
                 
                 setPosts(formattedPosts);
         
@@ -76,7 +76,7 @@ const Home = () => {
                             created_at={post.created_at}
                             likes={post.likes}
                         />
-                        <p>Debug - Like count: {post.likes}</p>
+                        {/* <p>Debug - Like count: {post.likes}</p> */}
                     </div>
                     ))
                 ) : (
