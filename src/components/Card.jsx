@@ -1,91 +1,89 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import '../styles/Card.css'
 import { Link } from 'react-router-dom'
-import { supabase } from '../../client'
-
+import { useSupabaseClient } from '../../client'
+import { useUser } from '@clerk/clerk-react'
 
 const Card = (props) =>  {
+  const { user, isLoaded, isSignedIn } = useUser();
   const [likeCount, setLikeCount] = useState(props.likes)
   const [isLiked, setIsLiked] = useState(false)
-  const [userId, setUserId] = useState(1)
+
+  const client = useSupabaseClient();
+
+  const checkLikeStatus = useCallback(async () => {
+    if (isSignedIn && user && client) {
+      const { data, error } = await client
+        .from('Post_Likes')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('post_id', props.id)
+      
+      if (data && data.length > 0) {
+        setIsLiked(true)
+      }
+    }
+  }, [isSignedIn, user, client, props.id]);
 
   useEffect(() => {
-    const checkLikeStatus = async () => {
-      // This should be replaced with actual user authentication
-      // const { data: { user } } = await supabase.auth.getUser()
-      // if (user) {
-      //   setUserId(user.id)
-        const { data, error } = await supabase
-          .from('Post_Likes')
-          .select('*')
-          .eq('user_id', userId)
-          .eq('post_id', props.id)
-        
-        if (data && data.length > 0) {
-          setIsLiked(true)
-        }
-    }
-
     checkLikeStatus()
-  }, [props.id, userId])
+  }, [isLoaded, isSignedIn, user, checkLikeStatus])
 
   const updateCount = async () => {
-    console.log(likeCount);
-    console.log(isLiked);
-    console.log(props.likes)
-    if (!userId) {
+    if (!isSignedIn || !user) {
       alert('You must be logged in to like posts')
       return
     }
-
-    let newLikeCount = likeCount;
-
-    if (isLiked) {
-      // Unlike the post
-      const { error } = await supabase
-        .from('Post_Likes')
-        .delete()
-        .eq('user_id', userId)
-        .eq('post_id', props.id)
-
-      if (error) {
-        console.error('Error unliking post:', error)
-        return
+  
+    try {
+      let newLikeCount = likeCount;
+  
+      if (isLiked) {
+        // Unlike the post
+        const { error: deleteError } = await client
+          .from('Post_Likes')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('post_id', props.id)
+  
+        if (deleteError) throw deleteError;
+  
+        newLikeCount -= 1;
+      } else {
+        // Like the post
+        const { error: insertError } = await client
+          .from('Post_Likes')
+          .insert({ user_id: user.id, post_id: props.id })
+  
+        if (insertError) throw insertError;
+  
+        newLikeCount += 1;
       }
-
-      setLikeCount(prevCount => prevCount - 1)
-      setIsLiked(false)
-      newLikeCount -= 1
-   
-    } else {
-      // Like the post
-      const { error } = await supabase
-        .from('Post_Likes')
-        .insert({ user_id: userId, post_id: props.id })
-
-      if (error) {
-        console.error('Error liking post:', error)
-        return
+  
+      // Update the like count in the Posts table
+      const { data, error: updateError } = await client
+        .from('Posts')
+        .update({ likes: newLikeCount })
+        .eq('id', props.id)
+        .select()
+  
+      if (updateError) throw updateError;
+  
+      // Check if the update was successful
+      if (data && data.length > 0) {
+        setLikeCount(data[0].likes);
+        setIsLiked(!isLiked);
+      } else {
+        throw new Error('Failed to update post likes');
       }
-
-      setLikeCount(prevCount => prevCount + 1)
-      setIsLiked(true)
-      newLikeCount += 1
-
-    }
-
-    // Update the like count in the Posts table
-    const { error } = await supabase
-      .from('Posts')
-      .update({ likes: newLikeCount })
-      .eq('id', props.id)
-
-    if (error) {
-      console.error('Error updating post like count:', error)
+  
+    } catch (error) {
+      console.error('Error updating like:', error)
+      // Optionally, revert the local state if the database update failed
+      checkLikeStatus();
     }
   }
-  
 
   return (
       <div className="Card">
