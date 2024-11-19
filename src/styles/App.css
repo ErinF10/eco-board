@@ -3,7 +3,7 @@
 }
 
 .main-content {
-  padding-top: 70px;
+  padding-top: 80px;
   padding-left: 300px;
   color: black;
 }
@@ -57,6 +57,11 @@
 }
 
 .user-container {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-container {
   display: flex;
   gap: 10px;
 }

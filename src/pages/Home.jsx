@@ -3,14 +3,14 @@ import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import { useSupabaseClient } from '../../client.js'
 import Card from "../components/Card";
-import { useUser } from '@clerk/clerk-react';
 
 const Home = () => {
     const [posts, setPosts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [sortMethod, setSortMethod] = useState('recent');
+    const [searchQuery, setSearchQuery] = useState('');
     
-    const { user } = useUser();
     const client = useSupabaseClient();
 
     function formatDate(dateString) {
@@ -22,20 +22,35 @@ const Home = () => {
         return new Date(dateString).toLocaleDateString('en-US', options);
     }
 
+    const handleSortChange = (event) => {
+        setSortMethod(event.target.value);
+    };
+
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
     useEffect(() => {
         const fetchPosts = async () => {
-            // if (!client) {
-            //     console.log("Supabase client not ready yet");
-            //     return;
-            // }
 
             try {
                 if (client) {
-                    const { data, error } = await client
+                    let query = client
                     .from('Posts')
-                    .select(`*`)
-                    .order('created_at', { ascending: false });
+                    .select(`*`);
                 
+                    if (searchQuery) {
+                        query = query.or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`);
+                    }
+
+                    if (sortMethod === 'recent') {
+                        query = query.order('created_at', { ascending: false });
+                    } else if (sortMethod === 'likes') {
+                        query = query.order('likes', { ascending: false });
+                    }
+                
+                    const { data, error } = await query;
+
                     if (error) throw error;
                     
                     const formattedPosts = data.map(post => ({
@@ -57,11 +72,10 @@ const Home = () => {
         if (client) {
             fetchPosts();
         }
-    }, [client]); 
+    }, [client, sortMethod, searchQuery]); 
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
-    // console.log(user)
 
     return (
         <div className="home">
@@ -72,6 +86,22 @@ const Home = () => {
                 <Header page='Home' />
             </div>
             <div className="main-content">
+                <div className="filter-container">
+                    <select name='sort' id='sort' value={sortMethod} onChange={handleSortChange}>
+                        <option value="recent">Sort by most recent</option>
+                        <option value="likes">Sort by most Likes</option>
+                    </select>
+                  <form>
+                        <input 
+                            name="search" 
+                            id="search" 
+                            placeholder="Search by keyword"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                        />
+                    </form>
+                </div>
+ 
                 {posts.length > 0 ? (
                     posts.map((post) => (
                         <div key={`post-${post.id}`}>
