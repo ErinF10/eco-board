@@ -66,6 +66,22 @@
   gap: 10px;
 }
 
+.filter-container select {
+  background-color: white;
+  color: rgb(107, 107, 107);
+  border: 1px solid rgb(156, 156, 156);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.filter-container input {
+  background-color: white;
+  color: black;
+  border: 1px solid rgb(156, 156, 156);
+  border-radius: 5px;
+  padding: 5px;
+}
+
 @media only screen and (max-width: 700px) {
   .navbar-container {
     width: 80px; 

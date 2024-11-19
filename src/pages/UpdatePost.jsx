@@ -9,36 +9,37 @@ import { useSupabaseClient } from "../../client";
 const UpdatePost = () => {
     const {id} = useParams();
     const navigate = useNavigate();
-    const [post, setPost] = useState({ title: "", content: "" });
+    const [post, setPost] = useState({ title: "loading...", content: "loading..." });
 
     const { user } = useUser();
        
     const client = useSupabaseClient();
 
-    const getPostInfo = async () => {
-
-        try {
-            if (user && client) {
-                const {data, error} = await client 
-                .from('Posts')
-                .select('title, content')
-                .eq('id', id)
-            
-                if (error) throw error
-
-                setPost({
-                    title: data[0].title,
-                    content: data[0].content
-                });
-            }
-     
-        } catch (error) {
-            console.log('error fetching post data: ', error)
-        }
-    }
+   
     useEffect (() => {
+        const getPostInfo = async () => {
+            try {
+                if (user && client) {
+                    const {data, error} = await client 
+                        .from('Posts')
+                        .select('title, content')
+                        .eq('id', id)
+                
+                    if (error) throw error
+    
+                    setPost({
+                        title: data[0].title,
+                        content: data[0].content
+                    });
+                }
+         
+            } catch (error) {
+                console.log('error fetching post data: ', error)
+            }
+        }
         getPostInfo();
-    }, [])
+
+    }, [user, client, id])
 
     const updatePost = async (event) => {
         event.preventDefault();
