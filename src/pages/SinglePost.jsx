@@ -146,10 +146,10 @@ const SinglePost = () => {
                 <h2 className="title">{post.title}</h2>
                 <h4 className='username'>@{post.username} • {formatDate(post.created_at)}</h4>
                 <p className="content">{post.content}</p>
+                <p>This was the {getOrdinalNum(Number(id2))} post created on Eco Board!</p>
                 <button className="likeButton" onClick={updateCount}>
                     👍 Like Count: {likeCount}
                 </button>
-                <p>This was the {getOrdinalNum(Number(id2))} post created on Eco Board!</p>
             </div>
         </div>
     );
