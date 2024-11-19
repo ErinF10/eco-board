@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 const Navbar = () => {
+    // const {user, isLoaded, isSignedIn} = useUser();
+
+    // if ()
     const navItems = [
         {name: 'Home', path: '/'},
         { name: 'Create Post', path:'/create-post'},
-        { name: 'Profile', path: '/profile' },
-        { name: 'Settings', path: '/settings'},
+        { name: 'My Posts', path: '/my-posts'}
 
     ]
     return (

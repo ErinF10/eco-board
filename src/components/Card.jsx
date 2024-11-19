@@ -85,6 +85,39 @@ const Card = (props) =>  {
     }
   }
 
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete?")) {
+      // User clicked OK (Yes)
+      console.log("Deleting...");
+      // Perform delete operation
+      try {
+        if (client) {
+          const { data, error } = await client
+            .from('Posts')
+            .delete()
+            .eq('id', props.id)
+  
+          if (error) {
+            throw error
+          }
+
+          alert("Deleted post successfully")
+        }
+      } catch (error) {
+        console.log('error deleting post: ' + error)
+        if (error.code === '23503') {
+          alert("Cannot delete this post because it is referenced by other data.");
+        } else {
+          alert(`Failed to delete post: ${error.message}`);
+        }
+      }
+      
+    } else {
+        // User clicked Cancel (No)
+        console.log("Delete cancelled");
+    }
+  }
+
   return (
       <div className="Card">
         <Link to={'/post/' + props.id}>
@@ -92,7 +125,17 @@ const Card = (props) =>  {
             <h4 className='username'>@{props.username} • {props.created_at}</h4>
             <p className="content">{props.content}</p>
         </Link>
-            <button className={`likeButton ${isLiked ? 'liked' : ''}`}  onClick={updateCount} >👍 Like Count: {likeCount}</button>
+        <div className="button-container">
+          <button className={`likeButton ${isLiked ? 'liked' : ''}`}  onClick={updateCount} >👍 Like Count: {likeCount}</button>
+          {props.update &&
+            <Link to={'/update-post/' + props.id}>
+              <button className='update'>Update Post</button>
+            </Link>
+          }
+          {props.update &&
+            <button className='delete' onClick={handleDelete}>Delete Post</button>
+          }
+        </div>
       </div>
   );
 };

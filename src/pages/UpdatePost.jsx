@@ -1,45 +1,66 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
 import '../styles/CreatePost.css'
 import { useUser } from '@clerk/clerk-react';
 import { useSupabaseClient } from "../../client";
 
-const CreatePost = () => {
-    const [post, setPost] = useState({ title: "", content: "" });
+const UpdatePost = () => {
+    const {id} = useParams();
     const navigate = useNavigate();
+    const [post, setPost] = useState({ title: "", content: "" });
 
     const { user } = useUser();
        
     const client = useSupabaseClient();
 
-    const createPost = async (event) => {
+    const getPostInfo = async () => {
+
+        try {
+            if (user && client) {
+                const {data, error} = await client 
+                .from('Posts')
+                .select('title, content')
+                .eq('id', id)
+            
+                if (error) throw error
+
+                setPost({
+                    title: data[0].title,
+                    content: data[0].content
+                });
+            }
+     
+        } catch (error) {
+            console.log('error fetching post data: ', error)
+        }
+    }
+    useEffect (() => {
+        getPostInfo();
+    }, [])
+
+    const updatePost = async (event) => {
         event.preventDefault();
       
-        if (!user) {
-            alert("You must be signed in to create a post");
-            return;
-        }
-        if (!client) {
-            console.log("Client is not setup")
+        if (!user || !client) {
+            alert("User not authenticated or client not ready");
             return;
         }
 
         try {
             const { data, error } = await client
                 .from('Posts')
-                .insert({
+                .update({
                     title: post.title,
-                    user_id: user.id,
                     content: post.content,
-                    username: user.username
                 })
+                .eq('id', id)
                 .select();
 
             if (error) throw error;
 
-            alert("Post created Successfully!");
+            alert("Post updated Successfully!");
             navigate("/");
         } catch (error) {
             if (error.message.includes("JWT expired")) {
@@ -48,7 +69,7 @@ const CreatePost = () => {
                 // For example, redirect to login page
                 navigate("/https://good-penguin-55.accounts.dev/sign-in?redirect_url=http%3A%2F%2Flocalhost%3A5174%2F");
             } else {
-                alert("Error creating post: " + error.message);
+                alert("Error updating post: " + error.message);
             }
         }
     }
@@ -67,11 +88,11 @@ const CreatePost = () => {
                 <Navbar />
             </div>
             <div className="header-container">
-                <Header page='Create Post'/>
+                <Header page='Update Post'/>
             </div>
 
             <div className="main-content">
-                <form className="create-post-form" onSubmit={createPost}>
+                <form className="create-post-form" onSubmit={updatePost}>
                     <div className="form-group">
                         <label htmlFor="title">Title</label>
                         <input 
@@ -97,7 +118,7 @@ const CreatePost = () => {
                         ></textarea>
                     </div>
                     <div className="button-container">
-                        <button type="submit">Create Post</button>
+                        <button type="submit">Update Post</button>
                     </div>
                 </form>
             </div>
@@ -105,4 +126,4 @@ const CreatePost = () => {
     )
 }
 
-export default CreatePost;
+export default UpdatePost;

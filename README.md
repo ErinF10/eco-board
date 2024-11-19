@@ -20,12 +20,12 @@ The following **required** functionality is completed:
 - [x] **A separate post page for each created post, where any additional information is shown is linked whenever a user clicks a post**
 - [ ] **Users can leave comments underneath a post on the post's separate page**
 - [x] **Each post should have an upvote button on the post's page. Each click increases its upvotes count by one and users can upvote any number of times**
-- [ ] **A previously created post can be edited or deleted from its post page**
+- [x] **A previously created post can be edited or deleted from its post page**
 
 The following **optional** features are implemented:
 
-- [ ] Users can only edit and deleted posts or delete comments by entering the secret key, which is set by the user during post creation
-- [ ] Upon launching the web app, the user is assigned a random user ID. It will be associated with all posts and comments that they make and displayed on them.
+- [x] Users can only edit and deleted posts or delete comments by entering the secret key, which is set by the user during post creation (Users can only edit and delete their own posts verified through user_id sent when an account is created)
+- [x] Upon launching the web app, the user is assigned a random user ID. It will be associated with all posts and comments that they make and displayed on them. (Users are able to sign up for an account)
 - [ ] Users can repost a previous post by referencing its post ID. On the post page of the new post, the referenced post is displayed and linked, creating a thread
 - [ ] Users can customize the interface of the web app
 - [ ] Users can share and view web videos
@@ -35,7 +35,9 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you added to improve the site's functionality!
+* [x] Users are able to login using clerk to create an account
+* [x] The username of the current user is shown on each post
+* [x] Users not logged in may still view posts but they are not able to create or like posts
 
 ## Video Walkthrough
 

@@ -3,7 +3,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/c
 
 
 const Header = (props) => {
-    // const { user, isLoaded } = useUser()
+    const { user } = useUser()
 
     // if (!isLoaded) {
     //     // Handle loading state however you like
@@ -21,7 +21,7 @@ const Header = (props) => {
                 </SignedOut>
                 <SignedIn>
                     <div className="user-container">
-                        {/* <p>{user.fullName}</p> */}
+                        {user && <p>{user.username}</p> }
                         <UserButton />
                     </div>
  
