@@ -4,7 +4,7 @@ Submitted by: **Your Name Here**
 
 This web app: **insert description**
 
-Time spent: **X** hours spent in total
+Time spent: **18** hours spent in total
 
 ## Required Features
 
@@ -18,14 +18,14 @@ The following **required** functionality is completed:
 - [ ] **Users can sort posts by either their created time or upvotes count**
 - [ ] **Users can search for posts by title**
 - [x] **A separate post page for each created post, where any additional information is shown is linked whenever a user clicks a post**
-- [ ] **Users can leave comments underneath a post on the post's separate page**
+- [x] **Users can leave comments underneath a post on the post's separate page**
 - [x] **Each post should have an upvote button on the post's page. Each click increases its upvotes count by one and users can upvote any number of times**
 - [x] **A previously created post can be edited or deleted from its post page**
 
 The following **optional** features are implemented:
 
 - [x] Users can only edit and deleted posts or delete comments by entering the secret key, which is set by the user during post creation (Users can only edit and delete their own posts verified through user_id sent when an account is created)
-- [x] Upon launching the web app, the user is assigned a random user ID. It will be associated with all posts and comments that they make and displayed on them. (Users are able to sign up for an account)
+- [x] Upon launching the web app, the user is assigned a random user ID. It will be associated with all posts and comments that they make and displayed on them. (Users are able to sign up for an account set up through Clerk)
 - [ ] Users can repost a previous post by referencing its post ID. On the post page of the new post, the referenced post is displayed and linked, creating a thread
 - [ ] Users can customize the interface of the web app
 - [ ] Users can share and view web videos
