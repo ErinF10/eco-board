@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Header from "../components/Header";
-import { useSupabaseClient } from '../../client.js'
+import { useSupabaseClient } from "../../client.js";
 import Card from "../components/Card";
 
 const Home = () => {
